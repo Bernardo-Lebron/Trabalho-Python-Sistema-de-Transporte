@@ -35,4 +35,4 @@
    
    Limitações...
 
-<h2> Projeto desenvolvido por Bernardo Lebron e Pedro Araújo – Estudantes de Engenharia de Computação (CEFET-MG) </h2> 
+<h5> Projeto desenvolvido por Bernardo Lebron e Pedro Araújo – Estudantes de Engenharia de Computação (CEFET-MG) </h5> 
