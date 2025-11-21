@@ -33,6 +33,6 @@
 
    O sistema implementa uma versão funcional...
    
-   Limitações
+   Limitações...
 
-<h4> Projeto desenvolvido por Bernardo Lebron e Pedro Araújo – Estudantes de Engenharia de Computação (CEFET-MG) </h4> 
+<h2> Projeto desenvolvido por Bernardo Lebron e Pedro Araújo – Estudantes de Engenharia de Computação (CEFET-MG) </h2> 
