@@ -36,7 +36,6 @@ if __name__ == "__main__":
                 print("1 - Inserir Linha")
                 print("2 - Remover Linha")
                 print("3 - Alterar Linha")
-                print("4 - Listar Linhas Cadastradas")
 
                 try:
                     opcao2 = input("Escolha: ").strip()

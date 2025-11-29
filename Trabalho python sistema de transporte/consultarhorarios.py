@@ -1,7 +1,6 @@
 def consultar_horarios(linhas):
     """ Consultar horários de linhas por cidade de origem. """
 
-
     print("\n=== CONSULTA DE HORÁRIOS POR CIDADE DE ORIGEM ===\n")
 
     if not linhas:

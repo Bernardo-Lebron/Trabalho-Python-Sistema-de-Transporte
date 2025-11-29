@@ -1,7 +1,6 @@
 def validar_horario(h):
     """ Validar se o horário está no formato HH:MM e é um horário real. """
 
-
     try:
         # Formato precisa ser exatamente HH:MM
         if len(h) != 5 or h[2] != ":":
@@ -21,7 +20,6 @@ def validar_horario(h):
 
 def inserirlinha(linhas):
     """ Inserir nova linha no dicionário de linhas. """
-
 
     print("\n-----------------------------------------------\n")
 
@@ -63,14 +61,12 @@ def inserirlinha(linhas):
 def imprimirlinhaatual(linhas, ID):
     """ Imprimir os dados de uma linha específica. """
 
-
     origem, destino, horario, preco = linhas[ID]
     print(f'\nLinha {ID}: Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}\n')
 
 
 def imprimirlinhas(linhas):
     """ Imprimir todas as linhas cadastradas. """
-
 
     print("\n=== LINHAS CADASTRADAS ===")
     if not linhas:
@@ -85,7 +81,6 @@ def imprimirlinhas(linhas):
 
 def alterarlinha(linhas):
     """ Alterar dados de uma linha existente. """
-
 
     imprimirlinhas(linhas)
 
@@ -178,7 +173,6 @@ def alterarlinha(linhas):
 def removerlinha(linhas):
     """ Remover uma linha do dicionário de linhas. """
 
-    
     imprimirlinhas(linhas)
     idrem = input("Digite o ID da linha que deseja remover: ").strip().upper()
 
