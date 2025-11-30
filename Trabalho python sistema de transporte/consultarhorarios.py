@@ -19,7 +19,7 @@ def consultar_horarios(linhas):
             encontrados.append((ID, dados))
 
     if not encontrados:
-        print(f"\nNenhuma linha encontrada para a cidade '{cidade}'\n")
+        print(f"\nNenhuma linha encontrada partindo de: '{cidade}'\n")
         return
 
     print(f"\nLinhas encontradas partindo de {cidade}:\n")

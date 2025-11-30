@@ -1,9 +1,7 @@
-import random
+def gerar_onibus():
+    """Gera um ônibus com todos os 20 assentos livres."""
 
-def gerar_onibus(prob_ocupado=0.3):
-    """Gera um dicionário representando os assentos do ônibus."""
-
-    return {i: (random.random() >= prob_ocupado) for i in range(1, 21)}
+    return {i: True for i in range(1, 21)}
 
 
 def fmt_assento(n, livre):
@@ -58,7 +56,7 @@ def reservar_assento_interativo(onibus):
         confirmar = input(f"Confirmar assento {escolha:02d}? (s/n): ").strip().lower()
         if confirmar == "s":
             onibus[escolha] = False
-            print(f"✔ Assento {escolha:02d} reservado com sucesso!\n")
+            print(f"Assento {escolha:02d} reservado com sucesso!\n")
             return escolha
         else:
             print("Reserva não confirmada.\n")

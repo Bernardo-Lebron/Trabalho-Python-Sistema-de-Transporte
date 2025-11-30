@@ -49,6 +49,19 @@ def inserirlinha(linhas):
         except:
             print("Preço inválido! Digite apenas números.")
 
+    # --- VERIFICAÇÃO DE DUPLICIDADE  ---
+    # Percorre todas as linhas existentes para ver se já existe uma igual
+    for dados_linha in linhas.values():
+        # Comparamos apenas os 4 primeiros elementos
+        if (dados_linha[0] == origem and 
+            dados_linha[1] == destino and 
+            dados_linha[2] == horario and 
+            dados_linha[3] == preco):
+            
+            print(f"\nErro: Linha já cadastrada! ({origem} -> {destino} às {horario})")
+            return  # Encerra a função sem adicionar nada
+
+
     info = [origem, destino, horario, preco]
 
     ID = f"L{len(linhas) + 1}"
@@ -74,7 +87,10 @@ def imprimirlinhas(linhas):
         return
 
     for k, v in linhas.items():
-        origem, destino, horario, preco = v
+        origem = v[0]
+        destino = v[1]
+        horario = v[2]
+        preco = v[3]
         print(f'{k}: Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}')
     print()
 
