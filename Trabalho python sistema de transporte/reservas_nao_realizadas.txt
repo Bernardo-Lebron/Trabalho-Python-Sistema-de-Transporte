@@ -1,5 +1,5 @@
  RESERVAS NÃO REALIZADAS DURANTE PROCESSAMENTO DE ARQUIVO 
-
+ 
 LINHA 3: Rio de Janeiro, 23:00, 25/12/2025, 15 -> MOTIVO: Linha não encontrada para Rio De Janeiro às 23:00
 LINHA 4: Rio de Janeiro, 23:00, 25/12/2025, 16 -> MOTIVO: Linha não encontrada para Rio De Janeiro às 23:00
 LINHA 5: Cidade Inexistente, 08:00, 20/12/2025, 5 -> MOTIVO: Linha não encontrada para Cidade Inexistente às 08:00
