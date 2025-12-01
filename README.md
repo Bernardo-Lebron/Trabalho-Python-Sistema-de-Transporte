@@ -76,6 +76,7 @@ Inclui validações obrigatórias:
     <li><strong>6.1 – Faturamento mensal por linha</strong> (tela ou arquivo)</li>
     <li><strong>6.2 – Ocupação média por dia da semana</strong></li>
     <li><strong>6.3 – Relatório de erros</strong></li>
+    <li><strong>6.4 – Gerar arquivo de reservas inválidas</strong></li>
 </ul>
 
 <p>Arquivos gerados:</p>
