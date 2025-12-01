@@ -161,7 +161,7 @@ O sistema implementa uma solução funcional e modular de transporte rodoviário
 <h2>Desenvolvedores</h2>
 
 <p>
-<strong>Bernardo Lebron</strong><br>
-<strong>Pedro Araújo</strong><br>
+<strong>Bernardo Henrique Lebron Machado</strong><br>
+<strong>Pedro Henrique de Araújo Carvalho</strong><br>
 Estudantes de Engenharia de Computação – CEFET-MG
 </p>
