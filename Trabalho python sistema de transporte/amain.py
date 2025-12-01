@@ -3,17 +3,18 @@ from consultarhorarios import consultar_horarios
 import consultarassentos
 import relatorios
 from datetime import datetime, timedelta
-import lerarquivo  
+import lerarquivo 
+import reservarassento as rauto 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
 
-    linhas = {}
+    linhas = {} #Inicializa o dicionário de linhas
 
-    if not hasattr(relatorios, 'historico_vendas'):
-        relatorios.historico_vendas = []
+    if not hasattr(relatorios, 'historico_vendas'): #Garantir que o histórico de vendas exista
+        relatorios.historico_vendas = [] #Lista para armazenar o histórico de vendas
 
     while True:
-        print("\n\t\t SISTEMA DE TRANSPORTE DE PASSAGEIROS \n")
+        print("\n\t\t SISTEMA DE TRANSPORTE DE PASSAGEIROS \n") #Menu principal, com todas as opções disponíveis
 
         print("1 - Cadastro de Linhas")
         print("    1.1 - Inserir Linha")
@@ -80,16 +81,16 @@ if __name__ == "__main__":
 
                     cadastro.imprimirlinhas(linhas)
 
-                    entrada = input("Digite o ID da linha (ex: L1 ou 1) ou 's' para sair: ").strip()
+                    entrada = input("Digite o ID da linha (ex: L1 ou 1) ou 's' para sair: ").strip() #Solicita o ID da linha ao usuário
                     if entrada.lower() == 's':
                         continue
 
-                    ent = entrada.upper()
-                    if ent.startswith("L") and ent[1:].isdigit():
-                        linha_id = "L" + str(int(ent[1:]))
+                    ent = entrada.upper() #Normaliza a entrada do usuário para facilitar a verificação
+                    if ent.startswith("L") and ent[1:].isdigit(): #Verifica se o formato é 'L' seguido de números
+                        linha_id = "L" + str(int(ent[1:])) #Extrai o número e forma o ID correto
 
-                    elif ent.isdigit():
-                        linha_id = "L" + str(int(ent))
+                    elif ent.isdigit(): #Verifica se a entrada é apenas números
+                        linha_id = "L" + str(int(ent)) #Forma o ID adicionando 'L' na frente
 
                     else:
                         print("ID inválido. Use 'L1' ou '1'.\n")
@@ -101,42 +102,42 @@ if __name__ == "__main__":
                         relatorios.registrar_erro("Linha não encontrada", linha_id, "-", "-")
                         continue
 
-                    dados = linhas[linha_id]
-                    horario_linha = dados[2]   
+                    dados = linhas[linha_id] #Obtém os dados da linha selecionada
+                    horario_linha = dados[2] #Obtém o horário da linha
 
                     data_str = input("Digite a data da viagem (dd/mm/aaaa): ").strip()
 
                     try:
-                        data_usuario = datetime.strptime(data_str, "%d/%m/%Y").date()
+                        data_usuario = datetime.strptime(data_str, "%d/%m/%Y").date() #Tenta converter a string da data para um objeto date
                     except:
                         print("Data inválida! Use dd/mm/aaaa.\n")
-                        relatorios.registrar_erro("Data inválida", linha_id, data_str, "-")
+                        relatorios.registrar_erro("Data inválida", linha_id, data_str, "-") #Em caso de erro, registra o erro no relatório
                         continue
 
-                    hoje = datetime.today().date()
+                    hoje = datetime.today().date() #Obtém a data atual para comparações
 
-                    if data_usuario < hoje:
+                    if data_usuario < hoje: #Compara a data da viagem com a data atual
                         print("\nNão é permitido reservar para uma data que já passou!\n")
-                        relatorios.registrar_erro("Data já passou", linha_id, data_str, "-")
+                        relatorios.registrar_erro("Data já passou", linha_id, data_str, "-") #Caso a data já tenha passado, registra o erro
                         continue
 
-                    if data_usuario > hoje + timedelta(days=30):
+                    if data_usuario > hoje + timedelta(days=30): #Verifica se a data está dentro do limite de 30 dias
                         print("\nA data deve estar dentro de 30 dias.\n")
                         relatorios.registrar_erro("Data acima de 30 dias", linha_id, data_str, "-")
                         continue
 
-                    agora = datetime.now()
-                    if data_usuario == hoje:
-                        hh, mm = map(int, horario_linha.split(":"))
-                        if hh < agora.hour or (hh == agora.hour and mm <= agora.minute):
+                    agora = datetime.now() #Obtém a data e hora atual
+                    if data_usuario == hoje: #Se a data da viagem for hoje, verifica o horário
+                        hh, mm = map(int, horario_linha.split(":")) #Pega as horas e minutos do horário da linha
+                        if hh < agora.hour or (hh == agora.hour and mm <= agora.minute): #Compara com o horário atual
                             print("\nEsse ônibus já partiu hoje.\n")
                             relatorios.registrar_erro("Ônibus já partiu", linha_id, data_str, "-")
                             continue
 
                     onibus = consultarassentos.pegar_ou_criar_onibus_por_data(linhas, linha_id, data_str)
                     
-                    import reservarassento as rauto
-                    escolhido = rauto.reservar_assento_automatico(onibus)
+                    
+                    escolhido = rauto.reservar_assento_automatico(onibus) 
 
                     if escolhido is None:
                         print("Nenhum assento disponível!\n")
@@ -145,8 +146,8 @@ if __name__ == "__main__":
 
                     print(f"Assento {escolhido:02d} reservado automaticamente na linha {linha_id} em {data_str}!\n")
 
-                    preco = linhas[linha_id][3]
-                    relatorios.registrar_venda(linha_id, data_str, preco)
+                    preco = linhas[linha_id][3] 
+                    relatorios.registrar_venda(linha_id, data_str, preco) #Registra a venda no relatório
 
                 except Exception as e:
                     print("Erro ao processar reserva automática:")
@@ -165,7 +166,7 @@ if __name__ == "__main__":
 
                     if r == "1":
                         modo = input("Imprimir na tela (T) ou salvar em arquivo (A)? ").strip().upper()
-                        relatorios.relatorio_faturamento(linhas, imprimir_na_tela=(modo == "T"))
+                        relatorios.relatorio_faturamento(linhas, imprimir_na_tela=(modo == "T")) #Chama a função de relatório de faturamento
 
                     elif r == "2":
                         modo = input("Imprimir na tela (T) ou salvar em arquivo (A)? ").strip().upper()
@@ -198,7 +199,7 @@ if __name__ == "__main__":
                 if not nome_arq:
                     nome_arq = "reservas.txt"
                 
-                lerarquivo.processar_arquivo_reservas(linhas, relatorios.historico_vendas, nome_arq)
+                lerarquivo.processar_arquivo_reservas(linhas, relatorios.historico_vendas, nome_arq) #Chama a função para processar o arquivo de reservas
                 
                 input("\nPressione ENTER para continuar")
 
