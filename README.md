@@ -12,7 +12,7 @@ Dentro da pasta onde estão os arquivos do projeto, utilize o comando:</p>
 <p>O sistema funciona inteiramente pelo terminal, sem necessidade de bibliotecas externas.</p>
 
 
-<h2>Descrição Geral</h2>
+<h2>Descrição Geral </h2>
 
 <p>
 Este projeto implementa um <strong>Sistema de Transporte de Passageiros</strong>, desenvolvido como parte da disciplina
