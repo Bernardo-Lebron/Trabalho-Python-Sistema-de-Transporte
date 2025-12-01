@@ -84,6 +84,7 @@ Inclui validações obrigatórias:
     <li>relatorio_faturamento.txt</li>
     <li>relatorio_ocupacao.txt</li>
     <li>relatorio_erros.txt</li>
+    <li>reservas_invalidas.txt</li>
 </ul>
 
 <h3>7. Ler Reservas de Arquivo Texto</h3>
@@ -130,7 +131,10 @@ CIDADE, HORÁRIO, DATA, ASSENTO
     <li>consultarassentos.py</li>
     <li>reservarassento.py</li>
     <li>relatorios.py</li>
-    <li>sistema_de_transporte.py (arquivo principal)</li>
+    <li>lerarquivo.py</li>
+    <li>amain.py (arquivo principal)</li>
+    <li>reservas_nao_realizadas.txt</li>
+    <li>reservas.txt</li>
 </ul>
 
 
