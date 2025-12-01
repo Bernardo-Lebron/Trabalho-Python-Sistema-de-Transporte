@@ -1,7 +1,7 @@
 def consultar_horarios(linhas):
     """ Consultar horários de linhas por cidade de origem. """
 
-    print("\n=== CONSULTA DE HORÁRIOS POR CIDADE DE ORIGEM ===\n")
+    print("\n\t CONSULTA DE HORÁRIOS POR CIDADE DE ORIGEM \n")
 
     if not linhas:
         print("Nenhuma linha cadastrada!")
@@ -12,7 +12,6 @@ def consultar_horarios(linhas):
     encontrados = []
 
     for ID, dados in linhas.items():
-        # dados = [origem, destino, horario, preco]
         origem = dados[0]
 
         if origem == cidade:
@@ -25,8 +24,7 @@ def consultar_horarios(linhas):
     print(f"\nLinhas encontradas partindo de {cidade}:\n")
 
     for ID, dados in encontrados:
-        origem, destino, horario, preco = dados
-        print(f"{ID} – Origem: {origem} | Destino: {destino} | "
-              f"Horário: {horario} | Preço: R${preco:.2f}")
+        origem, destino, horario, preco = dados[:4]
+        print(f"{ID} – Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}")
 
     print()

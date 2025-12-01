@@ -3,12 +3,17 @@ from consultarhorarios import consultar_horarios
 import consultarassentos
 import relatorios
 from datetime import datetime, timedelta
+import lerarquivo  
+
 if __name__ == "__main__":
 
     linhas = {}
 
+    if not hasattr(relatorios, 'historico_vendas'):
+        relatorios.historico_vendas = []
+
     while True:
-        print("\n===== SISTEMA DE TRANSPORTE DE PASSAGEIROS =====\n")
+        print("\n\t\t SISTEMA DE TRANSPORTE DE PASSAGEIROS \n")
 
         print("1 - Cadastro de Linhas")
         print("    1.1 - Inserir Linha")
@@ -25,19 +30,16 @@ if __name__ == "__main__":
         print("    6.4 - Gerar arquivo de reservas inválidas")
         print("7 - Ler reservas de arquivo texto")
         print("0 - Sair")
-        print("\n===============================================\n")
+        print("\n\n")
 
         try:
             opcao = input("Escolha uma opção: ").strip()
 
-        # =====================================================================
-        # OPÇÃO 1 - CADASTRO DE LINHAS
-        # =====================================================================
             if opcao == "1":
-                print("\n--- CADASTRO DE LINHAS ---")
+                print("\n\t CADASTRO DE LINHAS \n")
                 print("1 - Inserir Linha")
                 print("2 - Remover Linha")
-                print("3 - Alterar Linha")
+                print("3 - Alterar Linha\n")
 
                 try:
                     opcao2 = input("Escolha: ").strip()
@@ -52,41 +54,25 @@ if __name__ == "__main__":
                         cadastro.alterarlinha(linhas)
 
                     else:
-                        print("Opção inválida no submenu de linhas!")
+                        print("Opção inválida!")
 
                 except Exception as e:
-                    print("Erro no submenu de cadastro! (main)")
+                    print("Erro no submenu de cadastro!")
                     print(e)
 
-
-        # =====================================================================
-        # OPÇÃO 2 - LISTAR LINHAS
-        # =====================================================================
             elif opcao == "2":
                 cadastro.imprimirlinhas(linhas)
 
-
-        # =====================================================================
-        # OPÇÃO 3 - CONSULTAR HORÁRIOS
-        # =====================================================================
             elif opcao == "3":
                 consultar_horarios(linhas)
 
-
-        # =====================================================================
-        # OPÇÃO 4 - CONSULTAR ASSENTOS
-        # =====================================================================
             elif opcao == "4":
                 consultarassentos.consultar_assentos(linhas)
 
-
-        # =====================================================================
-        # OPÇÃO 5 – RESERVA AUTOMÁTICA
-        # =====================================================================
             elif opcao == "5":
 
                 try:
-                    print("\n=== RESERVA AUTOMÁTICA ===\n")
+                    print("\n\t RESERVA AUTOMÁTICA\n")
 
                     if not linhas:
                         print("Nenhuma linha cadastrada!\n")
@@ -98,7 +84,6 @@ if __name__ == "__main__":
                     if entrada.lower() == 's':
                         continue
 
-                    # normalizar ID
                     ent = entrada.upper()
                     if ent.startswith("L") and ent[1:].isdigit():
                         linha_id = "L" + str(int(ent[1:]))
@@ -117,11 +102,8 @@ if __name__ == "__main__":
                         continue
 
                     dados = linhas[linha_id]
-                    horario_linha = dados[2]   # hh:mm
+                    horario_linha = dados[2]   
 
-                    # ---------------------------------------------
-                    # VALIDAR DATA
-                    # ---------------------------------------------
                     data_str = input("Digite a data da viagem (dd/mm/aaaa): ").strip()
 
                     try:
@@ -133,19 +115,16 @@ if __name__ == "__main__":
 
                     hoje = datetime.today().date()
 
-                    # data passada → proibido
                     if data_usuario < hoje:
                         print("\nNão é permitido reservar para uma data que já passou!\n")
                         relatorios.registrar_erro("Data já passou", linha_id, data_str, "-")
                         continue
 
-                    # mais de 30 dias → proibido
                     if data_usuario > hoje + timedelta(days=30):
                         print("\nA data deve estar dentro de 30 dias.\n")
                         relatorios.registrar_erro("Data acima de 30 dias", linha_id, data_str, "-")
                         continue
 
-                    # se for hoje, verificar horário
                     agora = datetime.now()
                     if data_usuario == hoje:
                         hh, mm = map(int, horario_linha.split(":"))
@@ -154,15 +133,8 @@ if __name__ == "__main__":
                             relatorios.registrar_erro("Ônibus já partiu", linha_id, data_str, "-")
                             continue
 
-                    # ---------------------------------------------
-                    # PEGAR OU CRIAR ÔNIBUS POR DATA
-                    # ---------------------------------------------
-                    from consultarassentos import pegar_ou_criar_onibus_por_data
-                    onibus = pegar_ou_criar_onibus_por_data(linhas, linha_id, data_str)
-
-                    # ---------------------------------------------
-                    # RESERVA AUTOMÁTICA
-                    # ---------------------------------------------
+                    onibus = consultarassentos.pegar_ou_criar_onibus_por_data(linhas, linha_id, data_str)
+                    
                     import reservarassento as rauto
                     escolhido = rauto.reservar_assento_automatico(onibus)
 
@@ -171,27 +143,18 @@ if __name__ == "__main__":
                         relatorios.registrar_erro("Ônibus cheio", linha_id, data_str, "-")
                         continue
 
-                    print(f"Assento {escolhido:02d} reservado automaticamente "
-                          f"na linha {linha_id} em {data_str}!\n")
+                    print(f"Assento {escolhido:02d} reservado automaticamente na linha {linha_id} em {data_str}!\n")
 
-                    # registrar venda
-                    try:
-                        preco = linhas[linha_id][3]
-                        relatorios.registrar_venda(linha_id, data_str, preco)
-                    except:
-                        pass
+                    preco = linhas[linha_id][3]
+                    relatorios.registrar_venda(linha_id, data_str, preco)
 
                 except Exception as e:
                     print("Erro ao processar reserva automática:")
                     print(e)
 
-
-            # =====================================================================
-            # OPÇÃO 6 – RELATÓRIOS
-            # =====================================================================
             elif opcao == "6":
                 try:
-                    print("\n--- RELATÓRIOS ---")
+                    print("\n\t RELATÓRIOS \n")
                     print("1 - Total arrecadado no mês por linha")
                     print("2 - Ocupação média por dia da semana")
                     print("3 - Relatório de erros")
@@ -225,19 +188,22 @@ if __name__ == "__main__":
                     print("Erro inesperado no menu de relatórios.")
                     print(e)
 
-
-            # -----------------------------------------------------------
-            # OPÇÃO 7 - LER ARQUIVO DE RESERVAS
-            # -----------------------------------------------------------
             elif opcao == "7":
-                print("a ser implementado...")
+                print("\n\t IMPORTAÇÃO DE RESERVAS EM LOTE \n")
+                print("Certifique-se que o arquivo está na pasta do projeto.")
+                print("Formato exigido: CIDADE_DESTINO, HORARIO, DATA, ASSENTO")
+                
+                nome_arq = input("Digite o nome do arquivo (ex: reservas.txt): ").strip()
+                
+                if not nome_arq:
+                    nome_arq = "reservas.txt"
+                
+                lerarquivo.processar_arquivo_reservas(linhas, relatorios.historico_vendas, nome_arq)
+                
+                input("\nPressione ENTER para continuar")
 
-
-            # =====================================================================
-            # OPÇÃO 0 – SAIR
-            # =====================================================================
             elif opcao == "0":
-                print("Encerrando o sistema...")
+                print("Encerrando o sistema")
                 break
 
             else:

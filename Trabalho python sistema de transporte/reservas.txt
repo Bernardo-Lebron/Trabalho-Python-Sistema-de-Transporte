@@ -1,0 +1,8 @@
+Belo Horizonte, 07:00, 20/12/2025, 1
+Belo Horizonte, 07:00, 20/12/2025, 2
+Rio de Janeiro, 23:00, 25/12/2025, 15
+Rio de Janeiro, 23:00, 25/12/2025, 16
+Cidade Inexistente, 08:00, 20/12/2025, 5
+Belo Horizonte, 07:00, 01/01/2020, 10
+Belo Horizonte, 07:00, 20/12/2025, 55
+Linha Mal Formatada, sem data
