@@ -220,3 +220,47 @@ def consultar_assentos(linhas):
     except Exception as e:
         print("Ocorreu um erro ao consultar assentos:", repr(e))
         print("Voltando ao menu...\n")
+
+        global id_linha_global, data_global, preco_global
+        id_linha_global = idlinha
+        data_global = data_str
+        preco_global = dados_linha[3]
+
+
+
+def reservar_assento_interativo(onibus):
+    while True:
+        imprimir_onibus(onibus)
+        escolha = input("\nEscolha o assento (1-20) ou 's' para sair: ").strip().lower()
+
+        if escolha == "s":
+            print("Operação cancelada.\n")
+            return None
+
+        if not escolha.isdigit():
+            print("Entrada inválida!\n")
+            continue
+
+        assento = int(escolha)
+        if not (1 <= assento <= 20):
+            print("Assento inexistente!\n")
+            continue
+
+        if not onibus.get(assento, False):
+            print("Assento ocupado!\n")
+            continue
+
+        confirmar = input(f"Confirmar assento {assento:02d}? (s/n): ").strip().lower()
+        if confirmar == "s":
+            onibus[assento] = False
+            print(f"Assento {assento:02d} reservado com sucesso!\n")
+
+            # ============================================
+            # ✔ REGISTRAR VENDA (necessário para relatório)
+            # ============================================
+            import relatorios
+            relatorios.registrar_venda(id_linha_global, data_global, preco_global)
+
+            return assento
+        else:
+            print("Reserva não confirmada.\n")

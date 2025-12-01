@@ -22,6 +22,7 @@ if __name__ == "__main__":
         print("    6.1 - Total arrecadado no mês por linha")
         print("    6.2 - Ocupação média por dia da semana")
         print("    6.3 - Relatório de erros (reservas inválidas)")
+        print("    6.4 - Gerar arquivo de reservas inválidas")
         print("7 - Ler reservas de arquivo texto")
         print("0 - Sair")
         print("\n===============================================\n")
@@ -194,6 +195,7 @@ if __name__ == "__main__":
                     print("1 - Total arrecadado no mês por linha")
                     print("2 - Ocupação média por dia da semana")
                     print("3 - Relatório de erros")
+                    print("4 - Gerar arquivo de reservas inválidas")
                     print("0 - Voltar\n")
 
                     r = input("Escolha: ").strip()
@@ -209,6 +211,9 @@ if __name__ == "__main__":
                     elif r == "3":
                         modo = input("Imprimir na tela (T) ou salvar em arquivo (A)? ").strip().upper()
                         relatorios.relatorio_erros(imprimir_na_tela=(modo == "T"))
+
+                    elif r == "4":
+                        relatorios.salvar_reservas_invalidas(linhas)
 
                     elif r == "0":
                         pass
