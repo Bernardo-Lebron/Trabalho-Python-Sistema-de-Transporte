@@ -6,7 +6,7 @@
 Dentro da pasta onde estão os arquivos do projeto, utilize o comando:</p>
 
 <pre>
-<code>python sistema_de_transporte.py</code>
+<code>amain.py</code>
 </pre>
 
 <p>O sistema funciona inteiramente pelo terminal, sem necessidade de bibliotecas externas.</p>
