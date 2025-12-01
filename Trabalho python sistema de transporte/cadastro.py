@@ -1,4 +1,4 @@
-import re 
+import re #import que auxilia na validação de strings
 
 def validar_horario(h):
     """ Validar se o horário está no formato HH:MM e é um horário real."""
@@ -16,6 +16,7 @@ def validar_horario(h):
     except:
         return False #Caso dê algum erro em qualquer etapa retorna falso e volta para o loop de input
 
+
 def validar_string_nao_numerica(texto):
     """ 
     Verifica se a string não é vazia e não consiste apenas em dígitos. 
@@ -27,8 +28,10 @@ def validar_string_nao_numerica(texto):
         return False #Caso esteja vazia retorna falso
     return not re.fullmatch(r'\d+', texto) #A função retorna falso somente se a string consistir apenas em dígitos
 
+
 def obter_input_string_valida(prompt):
     """ Loop para garantir que o usuário insira uma string válida (não vazia e não só números). """
+
     while True: #Inicia um loop infinito que somenente será interrompido com uma entrada válida
         entrada = input(prompt).strip().title() #Pede a entrada do usuário, remove espaços desnecessários e coloca em formato de título
         if validar_string_nao_numerica(entrada): #Chama a função de validação para verificar se a entrada é válida
@@ -40,12 +43,10 @@ def obter_input_string_valida(prompt):
 def inserirlinha(linhas):
     """ 
     Inserir nova linha no dicionário de linhas.
-    Sincronizado: a estrutura de dados de assentos é inicializada aqui. 
+    Sincronizado: a estrutura de dados de assentos é inicializada aqui.
     """
 
-
     origem = obter_input_string_valida('Digite a cidade de origem da linha: ') #Recebe a origem válida da linha
-    
     destino = obter_input_string_valida('Digite a cidade de destino da linha: ') #Recebe o destino válida da linha
 
     while True:
@@ -54,7 +55,7 @@ def inserirlinha(linhas):
             if validar_horario(horario): #Chama a função de validação para verificar se o horário é válido
                 break
             else:
-                print("Horário inválido! Use o formato HH:MM e valores reais (00–23:00–59).") 
+                print("Horário inválido! Use o formato HH:MM e valores reais (00-23:00-59).") 
         except:
             print("Erro ao ler horário, tente novamente.") 
 
@@ -73,12 +74,12 @@ def inserirlinha(linhas):
 
         if (dados_linha[0] == origem and dados_linha[1] == destino and dados_linha[2] == horario and dados_linha[3] == preco):
             
-            print(f"\nErro: Linha já cadastrada! ({origem} -> {destino} às {horario})")
+            print(f"\nErro: Linha já cadastrada! (Origem: {origem} | Destino: {destino} | às {horario})")
             return 
 
     info = [origem, destino, horario, preco, {}] #Inicializa os dados da linha com o mapa de assentos vazio
 
-    ID = f"L{len(linhas) + 1}"
+    ID = f"L{len(linhas) + 1}" #Gera um ID único para a nova linha com base na quantidade de linhas já cadastradas
     linhas[ID] = info #Adiciona a nova linha ao dicionário de linhas com um ID
 
     imprimirlinhaatual(linhas, ID) #Mostra os dados da linha cadastrada
@@ -88,7 +89,7 @@ def inserirlinha(linhas):
 def imprimirlinhaatual(linhas, ID): 
     """ Imprimir os dados de uma linha específica. """
 
-    origem, destino, horario, preco = linhas[ID][:4] 
+    origem, destino, horario, preco = linhas[ID][:4] #Pega os dados da linha específica com base no ID fornecido
     print(f'\nLinha {ID}: Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}\n')
 
 
@@ -100,7 +101,7 @@ def imprimirlinhas(linhas):
         print("Nenhuma linha cadastrada.\n")
         return
 
-    for k, v in linhas.items(): #Itera sobre o dicionário de linhas para imprimir cada linha cadastrada
+    for k, v in linhas.items(): #Imprime todas as linhas cadastradas no dicionário
         origem = v[0]
         destino = v[1]
         horario = v[2]
@@ -171,7 +172,7 @@ def alterarlinha(linhas):
                 if validar_horario(novo_horario): #Chama a função de validação para verificar se o horário é válido
                     linhas[idalterar][2] = novo_horario
                     break
-                print("Horário inválido! Use o formato HH:MM e valores reais (00–23:00–59).")
+                print("Horário inválido! Use o formato HH:MM e valores reais (00-23:00-59).")
 
         elif opcao == 4:
             while True: #Loop para garantir que o usuário insira um preço válido

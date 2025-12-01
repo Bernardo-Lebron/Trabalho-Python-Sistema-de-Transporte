@@ -7,27 +7,24 @@ def consultar_horarios(linhas):
         print("Nenhuma linha cadastrada!")
         return
 
-    # MUDANÇA AQUI: Agora pedimos a cidade de destino
     cidade = input("Digite a cidade de destino: ").strip().title()
 
-    encontrados = []
+    encontrados = [] #Lista para armazenar linhas encontradas
 
-    for ID, dados in linhas.items():
-        # MUDANÇA AQUI: Agora comparamos com a cidade de destino (índice 1)
+    for ID, dados in linhas.items(): #Percorre todas as linhas cadastradas
         destino = dados[1] 
 
-        if destino == cidade:
-            encontrados.append((ID, dados))
+        if destino == cidade: #Se o destino da linha corresponder à cidade desejada
+            encontrados.append((ID, dados)) #Adiciona a linha à lista de encontrados
 
     if not encontrados:
         print(f"\nNenhuma linha encontrada com destino a: '{cidade}'\n")
         return
 
-    print(f"\nLinhas encontradas com destino a {cidade}:\n")
+    print(f"\nLinhas encontradas com destino a {cidade}:\n") #Imprime as linhas encontradas
 
-    for ID, dados in encontrados:
-        origem, destino, horario, preco = dados[:4]
-        # Exibimos a Origem e o Horário (já que o Destino é a cidade buscada)
-        print(f"{ID} – Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}")
+    for ID, dados in encontrados: #Percorre as linhas encontradas
+        origem, destino, horario, preco = dados[:4] #Insere os dados da linha
+        print(f"{ID}  Origem: {origem} | Destino: {destino} | Horário: {horario} | Preço: R${preco:.2f}") #Imprime os dados formatados
 
     print()

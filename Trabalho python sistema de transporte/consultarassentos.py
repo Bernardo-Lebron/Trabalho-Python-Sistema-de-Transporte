@@ -12,7 +12,7 @@ def gerar_onibus():
 def fmt_assento(n, livre):
     """Formata o assento para exibição."""
 
-    return f"[{n:02d}]" if livre else "[XX]"
+    return f"[{n:02d}]" if livre else "[XX]" 
 
 
 def linha_fileira(onibus, base):
@@ -22,23 +22,23 @@ def linha_fileira(onibus, base):
     esq_corredor = fmt_assento(base + 1, onibus[base + 1])
     dir_corredor = fmt_assento(base + 3, onibus[base + 3])
     dir_janela   = fmt_assento(base + 2, onibus[base + 2])
-    return f"{esq_janela} {esq_corredor}  |      |  {dir_corredor} {dir_janela}"
+    return f"{esq_janela} {esq_corredor}  |      |  {dir_corredor} {dir_janela}" #Formata a fileira com um corredor no meio e os assentos impares nas janelas
 
 
 def imprimir_onibus(onibus):
     """Imprime o mapa de assentos do ônibus."""
 
-    linhas_bus = [linha_fileira(onibus, base) for base in range(1, 20, 4)]
-    largura = max(len(l) for l in linhas_bus)
+    linhas_bus = [linha_fileira(onibus, base) for base in range(1, 20, 4)] #Gera as fileiras do ônibus de 4 em 4 assentos
+    largura = max(len(l) for l in linhas_bus) 
 
-    print("\n+" + "-" * (largura + 2) + "+")
-    print("|" + " MAPA DO ÔNIBUS ".center(largura + 2) + "|")
-    print("|" + " " * (largura + 2) + "|")
+    print("\n+" + "-" * (largura + 2) + "+") #Topo do mapa do ônibus
+    print("|" + " MAPA DO ÔNIBUS ".center(largura + 2) + "|") #Título centralizado
+    print("|" + " " * (largura + 2) + "|") #Linha em branco para espaçamento
 
     for l in linhas_bus:
-        print("| " + l.ljust(largura) + " |")
+        print("| " + l.ljust(largura) + " |") #Imprime cada fileira do ônibus, alinhada à esquerda
 
-    print("+" + "-" * (largura + 2) + "+\n")
+    print("+" + "-" * (largura + 2) + "+\n") #Base do mapa do ônibus
     print("  [nn] = assento livre")
     print("  [XX] = assento ocupado\n")
 
@@ -49,23 +49,23 @@ def pegar_ou_criar_onibus_por_data(linhas, idlinha, data):
     Inicializa se não existir.
     """
 
-    dados = linhas[idlinha]
+    dados = linhas[idlinha] 
 
-    if isinstance(dados, tuple):
-        dados = list(dados)
-        linhas[idlinha] = dados
+    if isinstance(dados, tuple): #Converter tupla imutável em lista mutável
+        dados = list(dados) 
+        linhas[idlinha] = dados 
 
-    if len(dados) >= 5 and isinstance(dados[4], dict):
+    if len(dados) >= 5 and isinstance(dados[4], dict): #Verifica se o mapa de datas já existe
         mapa_datas = dados[4]
         if data not in mapa_datas:
-            mapa_datas[data] = gerar_onibus()
+            mapa_datas[data] = gerar_onibus() 
         return mapa_datas[data]
-    else:
+    else: #Cria o mapa de datas se não existir
         mapa_datas = {data: gerar_onibus()}
         if len(dados) >= 5:
             dados[4] = mapa_datas
         else:
-            dados.append(mapa_datas)
+            dados.append(mapa_datas) 
         linhas[idlinha] = dados
         return mapa_datas[data]
 
@@ -93,7 +93,7 @@ def reservar_assento_interativo(onibus, id_linha, data_str, preco):
             print("Assento inexistente!\n")
             continue
 
-        if not onibus.get(assento, False):
+        if not onibus.get(assento, False): 
             print("Assento ocupado!\n")
             continue
 
@@ -102,7 +102,7 @@ def reservar_assento_interativo(onibus, id_linha, data_str, preco):
             onibus[assento] = False
             print(f"Assento {assento:02d} reservado com sucesso!\n")
 
-            relatorios.registrar_venda(id_linha, data_str, preco)
+            relatorios.registrar_venda(id_linha, data_str, preco) #Registar a venda no relatório
 
             return assento
         else:
@@ -126,28 +126,28 @@ def consultar_assentos(linhas):
 
         while True:
             horario_desejado = input('Digite o HORÁRIO de partida [ex: 19:00]: ').strip()
-            if validar_horario(horario_desejado):
+            if validar_horario(horario_desejado): 
                 break
             else:
-                print("Horário inválido! Use o formato HH:MM e valores reais (00–23:00–59).")
+                print("Horário inválido! Use o formato HH:MM e valores reais (00-23:00-59).")
         
         print("\nBuscando linhas...")
 
-        linhas_encontradas = []
-        for ID, dados in linhas.items():
-            if dados[1] == destino_desejado and dados[2] == horario_desejado:
-                linhas_encontradas.append((ID, dados))
+        linhas_encontradas = [] 
+        for ID, dados in linhas.items(): #Verifica as linhas que correspondem ao destino e horário desejados
+            if dados[1] == destino_desejado and dados[2] == horario_desejado: 
+                linhas_encontradas.append((ID, dados)) #Adiciona a linha encontrada à lista
 
-        if not linhas_encontradas:
+        if not linhas_encontradas: 
             print(f"\nNenhuma linha encontrada para o destino '{destino_desejado}' no horário '{horario_desejado}'.\n")
             return
 
         print(f"\nLinhas disponíveis para {destino_desejado} às {horario_desejado}:\n")
         
-        for ID, dados in linhas_encontradas:
-            origem = dados[0]
+        for ID, dados in linhas_encontradas: #Imprime as linhas encontradas
+            origem = dados[0] 
             preco = dados[3]
-            print(f"{ID} - De: {origem} → Para: {destino_desejado}  ({horario_desejado})  R${preco:.2f}")
+            print(f"{ID} - Origem: {origem} | Destino: {destino_desejado} | ({horario_desejado}) | R${preco:.2f}")
 
         while True:
             idlinha = input("\nDigite o ID da linha que deseja consultar (ex: L1) ou 's' para sair: ").strip().upper()
@@ -168,21 +168,21 @@ def consultar_assentos(linhas):
         data_str = input("Digite a data da viagem (dd/mm/aaaa): ").strip()
 
         try:
-            data_usuario = datetime.strptime(data_str, "%d/%m/%Y").date()
+            data_usuario = datetime.strptime(data_str, "%d/%m/%Y").date() #Converte a string da data para um objeto date
         except:
             print("Data inválida! Use o formato dd/mm/aaaa.\n")
             return
 
         hoje = datetime.today().date()
 
-        if data_usuario < hoje:
+        if data_usuario < hoje: #Se a data for anterior à hoje
             print("\nNão é permitido consultar/reservar um ônibus de uma data que já passou!\n")
-            relatorios.registrar_erro("Data já passou", idlinha, data_str, "-")
+            relatorios.registrar_erro("Data já passou", idlinha, data_str, "-") #Registra o erro no relatório
             return
 
-        if data_usuario > hoje + timedelta(days=30):
+        if data_usuario > hoje + timedelta(days=30): #Se a data for maior que 30 dias a partir de hoje
             print("\nA data deve estar dentro de 30 dias a partir de hoje.\n")
-            relatorios.registrar_erro("Data acima de 30 dias", idlinha, data_str, "-")
+            relatorios.registrar_erro("Data acima de 30 dias", idlinha, data_str, "-") #Registra o erro no relatório
             return
 
         agora = datetime.now()
@@ -192,23 +192,23 @@ def consultar_assentos(linhas):
 
             hh, mm = map(int, horario_linha.split(":"))
 
-            if (hh < hora_atual) or (hh == hora_atual and mm <= minuto_atual):
+            if (hh < hora_atual) or (hh == hora_atual and mm <= minuto_atual): #Se o horário da linha já passou hoje
                 print("\nEssa linha já partiu hoje! Não é possível reservar.\n")
-                relatorios.registrar_erro("Ônibus já partiu", idlinha, data_str, "-")
+                relatorios.registrar_erro("Ônibus já partiu", idlinha, data_str, "-") #Registra o erro no relatório
                 return
 
-        onibus = pegar_ou_criar_onibus_por_data(linhas, idlinha, data_str)
+        onibus = pegar_ou_criar_onibus_por_data(linhas, idlinha, data_str) #Obtém ou cria o mapa de assentos para a data desejada
 
         print(f"\nMapa de assentos da linha {idlinha} em {data_str}:")
         imprimir_onibus(onibus)
 
         op = input("Deseja reservar um assento nessa linha? (s/n): ").strip().lower()
         if op == "s":
-            reservar_assento_interativo(onibus, idlinha, data_str, preco_linha) 
-            print("Reserva processada. Voltando ao menu...\n")
+            reservar_assento_interativo(onibus, idlinha, data_str, preco_linha) #Chama a função de reserva interativa
+            print("Reserva processada. Voltando ao menu.\n")
         else:
-            print("Nenhuma reserva feita. Voltando ao menu...\n")
+            print("Nenhuma reserva feita. Voltando ao menu.\n")
 
     except Exception as e:
         print("Ocorreu um erro ao consultar assentos:", repr(e))
-        print("Voltando ao menu...\n")
+        print("Voltando ao menu.\n")

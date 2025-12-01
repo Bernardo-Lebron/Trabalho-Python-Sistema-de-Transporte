@@ -46,13 +46,13 @@ if __name__ == "__main__":
                     opcao2 = input("Escolha: ").strip()
 
                     if opcao2 == "1":
-                        cadastro.inserirlinha(linhas)
+                        cadastro.inserirlinha(linhas) #Chama a função para inserir uma nova linha
 
                     elif opcao2 == "2":
-                        cadastro.removerlinha(linhas)
+                        cadastro.removerlinha(linhas) #Chama a função para remover uma linha existente
 
                     elif opcao2 == "3":
-                        cadastro.alterarlinha(linhas)
+                        cadastro.alterarlinha(linhas) #Chama a função para alterar os dados de uma linha existente
 
                     else:
                         print("Opção inválida!")
@@ -62,13 +62,13 @@ if __name__ == "__main__":
                     print(e)
 
             elif opcao == "2":
-                cadastro.imprimirlinhas(linhas)
+                cadastro.imprimirlinhas(linhas) #Chama a função para imprimir todas as linhas cadastradas
 
             elif opcao == "3":
-                consultar_horarios(linhas)
+                consultar_horarios(linhas) #Chama a função para consultar horários por cidade de destino
 
             elif opcao == "4":
-                consultarassentos.consultar_assentos(linhas)
+                consultarassentos.consultar_assentos(linhas) #Chama a função para consultar assentos disponíveis
 
             elif opcao == "5":
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                         print("Nenhuma linha cadastrada!\n")
                         continue
 
-                    cadastro.imprimirlinhas(linhas)
+                    cadastro.imprimirlinhas(linhas) #Mostra todas as linhas cadastradas com os ID's, para o usuário escolher qual reservar
 
                     entrada = input("Digite o ID da linha (ex: L1 ou 1) ou 's' para sair: ").strip() #Solicita o ID da linha ao usuário
                     if entrada.lower() == 's':
@@ -94,12 +94,12 @@ if __name__ == "__main__":
 
                     else:
                         print("ID inválido. Use 'L1' ou '1'.\n")
-                        relatorios.registrar_erro("ID de linha inválido", "-", "-", "-")
+                        relatorios.registrar_erro("ID de linha inválido", "-", "-", "-") #Registra o erro no relatório
                         continue
 
                     if linha_id not in linhas:
                         print("Linha não encontrada!\n")
-                        relatorios.registrar_erro("Linha não encontrada", linha_id, "-", "-")
+                        relatorios.registrar_erro("Linha não encontrada", linha_id, "-", "-") #Registra o erro no relatório
                         continue
 
                     dados = linhas[linha_id] #Obtém os dados da linha selecionada
@@ -123,25 +123,26 @@ if __name__ == "__main__":
 
                     if data_usuario > hoje + timedelta(days=30): #Verifica se a data está dentro do limite de 30 dias
                         print("\nA data deve estar dentro de 30 dias.\n")
-                        relatorios.registrar_erro("Data acima de 30 dias", linha_id, data_str, "-")
+                        relatorios.registrar_erro("Data acima de 30 dias", linha_id, data_str, "-") #Registra o erro se a data exceder o limite
                         continue
 
                     agora = datetime.now() #Obtém a data e hora atual
+
                     if data_usuario == hoje: #Se a data da viagem for hoje, verifica o horário
                         hh, mm = map(int, horario_linha.split(":")) #Pega as horas e minutos do horário da linha
                         if hh < agora.hour or (hh == agora.hour and mm <= agora.minute): #Compara com o horário atual
                             print("\nEsse ônibus já partiu hoje.\n")
-                            relatorios.registrar_erro("Ônibus já partiu", linha_id, data_str, "-")
+                            relatorios.registrar_erro("Ônibus já partiu", linha_id, data_str, "-") #Registra o erro se o ônibus já partiu
                             continue
 
-                    onibus = consultarassentos.pegar_ou_criar_onibus_por_data(linhas, linha_id, data_str)
+                    onibus = consultarassentos.pegar_ou_criar_onibus_por_data(linhas, linha_id, data_str) #Obtém o mapa de assentos para a data especificada
                     
                     
-                    escolhido = rauto.reservar_assento_automatico(onibus) 
+                    escolhido = rauto.reservar_assento_automatico(onibus) #Tenta reservar um assento automaticamente
 
                     if escolhido is None:
                         print("Nenhum assento disponível!\n")
-                        relatorios.registrar_erro("Ônibus cheio", linha_id, data_str, "-")
+                        relatorios.registrar_erro("Ônibus cheio", linha_id, data_str, "-") #Registra o erro se não houver assentos disponíveis
                         continue
 
                     print(f"Assento {escolhido:02d} reservado automaticamente na linha {linha_id} em {data_str}!\n")
@@ -170,14 +171,14 @@ if __name__ == "__main__":
 
                     elif r == "2":
                         modo = input("Imprimir na tela (T) ou salvar em arquivo (A)? ").strip().upper()
-                        relatorios.relatorio_ocupacao(linhas, imprimir_na_tela=(modo == "T"))
+                        relatorios.relatorio_ocupacao(linhas, imprimir_na_tela=(modo == "T")) #Chama a função de relatório de ocupação média
 
                     elif r == "3":
                         modo = input("Imprimir na tela (T) ou salvar em arquivo (A)? ").strip().upper()
-                        relatorios.relatorio_erros(imprimir_na_tela=(modo == "T"))
+                        relatorios.relatorio_erros(imprimir_na_tela=(modo == "T")) #Chama a função de relatório de erros
 
                     elif r == "4":
-                        relatorios.salvar_reservas_invalidas(linhas)
+                        relatorios.salvar_reservas_invalidas(linhas) #Chama a função para salvar reservas inválidas em arquivo
 
                     elif r == "0":
                         pass
@@ -197,7 +198,7 @@ if __name__ == "__main__":
                 nome_arq = input("Digite o nome do arquivo (ex: reservas.txt): ").strip()
                 
                 if not nome_arq:
-                    nome_arq = "reservas.txt"
+                    nome_arq = "reservas.txt" #Nome padrão caso o usuário não informe nenhum
                 
                 lerarquivo.processar_arquivo_reservas(linhas, relatorios.historico_vendas, nome_arq) #Chama a função para processar o arquivo de reservas
                 
