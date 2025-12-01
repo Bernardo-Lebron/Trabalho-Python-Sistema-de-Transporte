@@ -1,18 +1,21 @@
-def gerar_onibus():
-    """Gera um ônibus com todos os 20 assentos livres."""
+from datetime import datetime, timedelta
 
+# ==========================
+#  GERAÇÃO DO ÔNIBUS
+# ==========================
+def gerar_onibus():
+    """Gera um ônibus com os 20 assentos livres."""
     return {i: True for i in range(1, 21)}
 
 
+# ==========================
+#  FORMATAÇÃO E IMPRESSÃO
+# ==========================
 def fmt_assento(n, livre):
-    """Formata a string de um assento conforme seu estado."""
-
     return f"[{n:02d}]" if livre else "[XX]"
 
 
 def linha_fileira(onibus, base):
-    """Gera a string de uma fileira do ônibus."""
-
     esq_janela   = fmt_assento(base,     onibus[base])
     esq_corredor = fmt_assento(base + 1, onibus[base + 1])
     dir_corredor = fmt_assento(base + 3, onibus[base + 3])
@@ -21,54 +24,116 @@ def linha_fileira(onibus, base):
 
 
 def imprimir_onibus(onibus):
-    """Imprime o mapa de assentos do ônibus."""
-
     linhas = [linha_fileira(onibus, base) for base in range(1, 20, 4)]
     largura = max(len(l) for l in linhas)
+
     print("\n+" + "-" * (largura + 2) + "+")
     print("|" + " MAPA DO ÔNIBUS ".center(largura + 2) + "|")
     print("|" + " " * (largura + 2) + "|")
+
     for l in linhas:
         print("| " + l.ljust(largura) + " |")
+
     print("+" + "-" * (largura + 2) + "+\n")
     print("  [nn] = assento livre")
     print("  [XX] = assento ocupado\n")
 
-def reservar_assento_interativo(onibus):
-    """Interação para escolher e reservar um assento. Modifica onibus e retorna assento ou None."""
 
+# ==========================
+#  Compatibilidade: pega/cria ônibus POR DATA
+# ==========================
+def pegar_ou_criar_onibus_por_data(linhas, idlinha, data):
+    """
+    Garante que a linha (que pode ser lista ou dict) tenha um mapa de ônibus por data.
+    - linhas: dicionário principal (para poder reatribuir se converter tuple->list)
+    - idlinha: chave da linha (ex: 'L1')
+    - data: string 'dd/mm/aaaa'
+    Retorna o mapa de assentos (dict 1..20 -> bool).
+    """
+    dados = linhas[idlinha]
+
+    # Se for tupla (improvável), converte para lista e salva
+    if isinstance(dados, tuple):
+        dados = list(dados)
+        linhas[idlinha] = dados
+
+    # Caso seja dicionário (estrutura alternativa), usamos chaves legíveis
+    if isinstance(dados, dict):
+        if "onibus" not in dados:
+            dados["onibus"] = {}
+        if data not in dados["onibus"]:
+            dados["onibus"][data] = gerar_onibus()
+        return dados["onibus"][data]
+
+    # Caso seja lista (o seu formato atual: [orig,dest,horario,preco] possivelmente com onibus como 5º elem)
+    if isinstance(dados, list):
+        # Se o 5º elemento existe e é um dict, assumimos que é o mapa de onibus por data
+        if len(dados) >= 5 and isinstance(dados[4], dict):
+            # dados[4] deve ser um dict de datas -> onibus
+            mapa = dados[4]
+            if data not in mapa:
+                mapa[data] = gerar_onibus()
+            return mapa[data]
+        else:
+            # ainda não há campo 'onibus' — criamos como 5º elemento
+            mapa = {}
+            mapa[data] = gerar_onibus()
+            if len(dados) >= 5:
+                dados[4] = mapa
+            else:
+                dados.append(mapa)
+            linhas[idlinha] = dados  # garante atualização no dicionário principal
+            return mapa[data]
+
+    # Se for outro tipo inesperado, lançamos erro para depuração
+    raise TypeError(f"Formato de dados da linha '{idlinha}' inesperado: {type(dados)}")
+
+
+# ==========================
+#  RESERVA INTERATIVA
+# ==========================
+def reservar_assento_interativo(onibus):
     while True:
         imprimir_onibus(onibus)
         escolha = input("\nEscolha o assento (1-20) ou 's' para sair: ").strip().lower()
+
         if escolha == "s":
             print("Operação cancelada.\n")
             return None
+
         if not escolha.isdigit():
-            print("Entrada inválida! Digite o número do assento (1-20) ou 's' para sair.\n")
+            print("Entrada inválida!\n")
             continue
-        escolha = int(escolha)
-        if not (1 <= escolha <= 20):
+
+        assento = int(escolha)
+        if not (1 <= assento <= 20):
             print("Assento inexistente!\n")
             continue
-        if not onibus.get(escolha, False):
+
+        if not onibus.get(assento, False):
             print("Assento ocupado!\n")
             continue
-        confirmar = input(f"Confirmar assento {escolha:02d}? (s/n): ").strip().lower()
+
+        confirmar = input(f"Confirmar assento {assento:02d}? (s/n): ").strip().lower()
         if confirmar == "s":
-            onibus[escolha] = False
-            print(f"Assento {escolha:02d} reservado com sucesso!\n")
-            return escolha
+            onibus[assento] = False
+            print(f"Assento {assento:02d} reservado com sucesso!\n")
+            return assento
         else:
             print("Reserva não confirmada.\n")
 
-# ---------------------------
-# função principal do módulo
-# ---------------------------
+
+# ==========================
+#  CONSULTA DE ASSENTOS
+# ==========================
 def consultar_assentos(linhas):
     """
-    Exibe linhas cadastradas, solicita ID, e mostra/permite reservar assentos
-    Cada linha receberá a chave 'onibus' (se for lista, será adicionada como 5º elemento;
-    se for dict, será salvo em dados['onibus']).
+    Exibe as linhas, pergunta a data e o ID da linha,
+    cria o ônibus daquela data se necessário e permite reservar assento.
+    Agora com validação:
+    - data passada proibida
+    - data acima de 30 dias proibida
+    - se for hoje, horário deve ser futuro
     """
 
     try:
@@ -78,20 +143,13 @@ def consultar_assentos(linhas):
             print("Nenhuma linha cadastrada!\n")
             return
 
-        # Lista as linhas (tolerante ao formato)
+        # Lista as linhas existentes
         print("Linhas cadastradas:")
         for ID, dados in linhas.items():
-            if isinstance(dados, dict):
-                origem = dados.get("origem", "")
-                destino = dados.get("destino", "")
-                horario = dados.get("horario", "")
-                preco = dados.get("preco", "")
-            else:
-                # lista/tupla: [origem,destino,horario,preco] (possivelmente com onibus como 5º)
-                origem = dados[0] if len(dados) > 0 else ""
-                destino = dados[1] if len(dados) > 1 else ""
-                horario = dados[2] if len(dados) > 2 else ""
-                preco = dados[3] if len(dados) > 3 else ""
+            origem = dados[0]
+            destino = dados[1]
+            horario = dados[2]
+            preco = dados[3]
             print(f"{ID} - {origem} → {destino}  ({horario})  R${preco}")
 
         idlinha = input("\nDigite o ID da linha que deseja consultar (ex: L1) ou 's' para sair: ").strip().upper()
@@ -103,33 +161,53 @@ def consultar_assentos(linhas):
             print("ID não encontrado!\n")
             return
 
-        # Recupera ou cria o onibus vinculado à linha
-        dados = linhas[idlinha]
-        # Se for dict e já tem 'onibus', use; se for lista com 5º elemento (mapa), use; senão crie e salve.
-        onibus = None
-        if isinstance(dados, dict):
-            onibus = dados.get("onibus")
-            if onibus is None:
-                onibus = gerar_onibus()
-                dados["onibus"] = onibus  # salva no dicionário da linha
-        else:
-            # lista/tupla
-            if len(dados) >= 5 and isinstance(dados[4], dict):
-                onibus = dados[4]
-            else:
-                onibus = gerar_onibus()
-                # se for lista, anexar; se for tupla (improvável), converter para lista
-                if isinstance(dados, tuple):
-                    dados = list(dados)
-                # garante que salvamos o mapa como 5º elemento
-                if len(dados) >= 5:
-                    dados[4] = onibus
-                else:
-                    dados.append(onibus)
-                linhas[idlinha] = dados  # atualiza entrada no dicionário principal
+        dados_linha = linhas[idlinha]
+        horario_linha = dados_linha[2]  # HH:MM do ônibus
 
-        # Mostrar mapa e perguntar se deseja reservar
-        print(f"\nMapa de assentos da linha {idlinha}:")
+        # ===========================
+        # VALIDAR DATA
+        # ===========================
+        data_str = input("Digite a data da viagem (dd/mm/aaaa): ").strip()
+
+        # Tentar converter para datetime
+        try:
+            data_usuario = datetime.strptime(data_str, "%d/%m/%Y").date()
+        except:
+            print("Data inválida! Use o formato dd/mm/aaaa.\n")
+            return
+
+        hoje = datetime.today().date()
+
+        # Verificar se data é passada
+        if data_usuario < hoje:
+            print("\nNão é permitido consultar/reservar um ônibus de uma data que já passou!\n")
+            return
+
+        # Verificar se é mais de 30 dias à frente
+        if data_usuario > hoje + timedelta(days=30):
+            print("\nA data deve estar dentro de 30 dias a partir de hoje.\n")
+            return
+
+        # ===========================
+        # CASO A DATA SEJA HOJE → CHECAR HORÁRIO
+        # ===========================
+        agora = datetime.now()
+        if data_usuario == hoje:
+            hora_atual = agora.hour
+            minuto_atual = agora.minute
+
+            hh, mm = map(int, horario_linha.split(":"))
+
+            if (hh < hora_atual) or (hh == hora_atual and mm <= minuto_atual):
+                print("\nEssa linha já partiu hoje! Não é possível reservar.\n")
+                return
+
+        # ===========================
+        # PEGAR / CRIAR ÔNIBUS DA DATA
+        # ===========================
+        onibus = pegar_ou_criar_onibus_por_data(linhas, idlinha, data_str)
+
+        print(f"\nMapa de assentos da linha {idlinha} em {data_str}:")
         imprimir_onibus(onibus)
 
         op = input("Deseja reservar um assento nessa linha? (s/n): ").strip().lower()
@@ -140,6 +218,5 @@ def consultar_assentos(linhas):
             print("Nenhuma reserva feita. Voltando ao menu...\n")
 
     except Exception as e:
-        # nunca deixar quebrar o programa — mostra erro amigável e continua
-        print("Ocorreu um erro ao consultar assentos:", e)
+        print("Ocorreu um erro ao consultar assentos:", repr(e))
         print("Voltando ao menu...\n")
