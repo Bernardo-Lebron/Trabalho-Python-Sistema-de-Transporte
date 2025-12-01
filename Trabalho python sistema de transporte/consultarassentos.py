@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
-import relatorios 
+import relatorios
+from cadastro import validar_horario 
+from cadastro import obter_input_string_valida
 
 def gerar_onibus():
     """Gera um ônibus com os 20 assentos livres. (Assento: True/Livre)"""
@@ -109,7 +111,7 @@ def reservar_assento_interativo(onibus, id_linha, data_str, preco):
 
 def consultar_assentos(linhas):
     """
-    Exibe as linhas, pergunta a data e o ID da linha,
+    Exibe as linhas, pergunta o DESTINO, HORÁRIO e DATA,
     cria o ônibus daquela data se necessário e permite reservar assento.
     """
 
@@ -120,22 +122,44 @@ def consultar_assentos(linhas):
             print("Nenhuma linha cadastrada!\n")
             return
 
-        print("Linhas cadastradas:")
+        destino_desejado = obter_input_string_valida("Digite a cidade de DESTINO: ").strip().title()
+
+        while True:
+            horario_desejado = input('Digite o HORÁRIO de partida [ex: 19:00]: ').strip()
+            if validar_horario(horario_desejado):
+                break
+            else:
+                print("Horário inválido! Use o formato HH:MM e valores reais (00–23:00–59).")
+        
+        print("\nBuscando linhas...")
+
+        linhas_encontradas = []
         for ID, dados in linhas.items():
+            if dados[1] == destino_desejado and dados[2] == horario_desejado:
+                linhas_encontradas.append((ID, dados))
+
+        if not linhas_encontradas:
+            print(f"\nNenhuma linha encontrada para o destino '{destino_desejado}' no horário '{horario_desejado}'.\n")
+            return
+
+        print(f"\nLinhas disponíveis para {destino_desejado} às {horario_desejado}:\n")
+        
+        for ID, dados in linhas_encontradas:
             origem = dados[0]
-            destino = dados[1]
-            horario = dados[2]
             preco = dados[3]
-            print(f"{ID} - {origem} → {destino}  ({horario})  R${preco}")
+            print(f"{ID} - De: {origem} → Para: {destino_desejado}  ({horario_desejado})  R${preco:.2f}")
 
-        idlinha = input("\nDigite o ID da linha que deseja consultar (ex: L1) ou 's' para sair: ").strip().upper()
-        if idlinha.lower() == 's':
-            print("Voltando ao menu...\n")
-            return
+        while True:
+            idlinha = input("\nDigite o ID da linha que deseja consultar (ex: L1) ou 's' para sair: ").strip().upper()
+            if idlinha.lower() == 's':
+                print("Voltando ao menu...\n")
+                return
+            
+            if idlinha in [item[0] for item in linhas_encontradas]:
+                break
+            
+            print("ID inválido ou não corresponde a uma das linhas listadas!")
 
-        if idlinha not in linhas:
-            print("ID não encontrado!\n")
-            return
 
         dados_linha = linhas[idlinha]
         horario_linha = dados_linha[2] 
