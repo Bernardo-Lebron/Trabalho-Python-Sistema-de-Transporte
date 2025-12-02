@@ -11,8 +11,8 @@ def consultar_horarios(linhas):
 
     encontrados = [] #Lista para armazenar linhas encontradas
 
-    for ID, dados in linhas.items(): #Percorre todas as linhas cadastradas
-        destino = dados[1] 
+    for ID, dados in linhas.items(): #Percorre todas as linhas cadastradas chave=ID, valor=dados
+        destino = dados[1] #dados[1] é o destino da linha
 
         if destino == cidade: #Se o destino da linha corresponder à cidade desejada
             encontrados.append((ID, dados)) #Adiciona a linha à lista de encontrados

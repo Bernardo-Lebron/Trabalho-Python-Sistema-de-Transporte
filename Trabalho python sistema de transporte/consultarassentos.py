@@ -5,14 +5,23 @@ from cadastro import obter_input_string_valida
 
 def gerar_onibus():
     """Gera um ônibus com os 20 assentos livres. (Assento: True/Livre)"""
-
-    return {i: True for i in range(1, 21)}
+    
+    mapa_assentos = {}  #Cria um dicionário vazio
+    
+    for i in range(1, 21): #Percorre os números de 1 a 20
+        mapa_assentos[i] = True #Adiciona cada assento como Livre (True)
+        
+    return mapa_assentos #Retorna o dicionário preenchido
 
 
 def fmt_assento(n, livre):
     """Formata o assento para exibição."""
-
-    return f"[{n:02d}]" if livre else "[XX]" 
+    
+    if livre:
+        return f"[{n:02d}]" # Se for True (Livre), retorna o número do assento formatado com dois dígitos
+    else:
+        
+        return "[XX]" # Se for False (Ocupado), retorna a marcação [XX]
 
 
 def linha_fileira(onibus, base):
@@ -51,8 +60,8 @@ def pegar_ou_criar_onibus_por_data(linhas, idlinha, data):
 
     dados = linhas[idlinha] 
 
-    if isinstance(dados, tuple): #Converter tupla imutável em lista mutável
-        dados = list(dados) 
+    if isinstance(dados, tuple):
+        dados = list(dados)  
         linhas[idlinha] = dados 
 
     if len(dados) >= 5 and isinstance(dados[4], dict): #Verifica se o mapa de datas já existe
