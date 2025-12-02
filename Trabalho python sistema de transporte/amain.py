@@ -27,7 +27,7 @@ if __name__ == "__main__":
         print("6 - Relatórios")
         print("    6.1 - Total arrecadado no mês por linha")
         print("    6.2 - Ocupação média por dia da semana")
-        print("    6.3 - Relatório de erros (reservas inválidas)")
+        print("    6.3 - Relatório de erros")
         print("    6.4 - Gerar arquivo de reservas inválidas")
         print("7 - Ler reservas de arquivo texto")
         print("0 - Sair")
