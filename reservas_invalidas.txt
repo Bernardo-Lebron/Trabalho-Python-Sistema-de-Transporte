@@ -1,5 +1,0 @@
-
-	 RESERVAS INVÁLIDAS 
-
-01/12/2025 | Linha: L1 | Horário: 20:00 | Origem: Cajuru | Destino: Nova York | Assento: - | Motivo: Data já passou
-- | Linha: L2 | Horário: - | - | Assento: - | Motivo: Linha não encontrada
