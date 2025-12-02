@@ -1,8 +1,5 @@
- RESERVAS NÃO REALIZADAS DURANTE PROCESSAMENTO DE ARQUIVO 
- 
-LINHA 3: Rio de Janeiro, 23:00, 25/12/2025, 15 -> MOTIVO: Linha não encontrada para Rio De Janeiro às 23:00
-LINHA 4: Rio de Janeiro, 23:00, 25/12/2025, 16 -> MOTIVO: Linha não encontrada para Rio De Janeiro às 23:00
-LINHA 5: Cidade Inexistente, 08:00, 20/12/2025, 5 -> MOTIVO: Linha não encontrada para Cidade Inexistente às 08:00
-LINHA 6: Belo Horizonte, 07:00, 01/01/2020, 10 -> MOTIVO: Data já passou
-LINHA 7: Belo Horizonte, 07:00, 20/12/2025, 55 -> MOTIVO: Assento 55 inexistente
-LINHA 8: Linha Mal Formatada, sem data -> MOTIVO: Formato incorreto (esperado: Cidade, Horário, Data, Assento)
+
+	 RESERVAS NÃO REALIZADAS DURANTE PROCESSAMENTO DE ARQUIVO 
+
+LINHA 3: Belo Horizonte, 07:00, 01/01/2020, 10 | MOTIVO: Data já passou
+LINHA 4: Belo Horizonte, 07:00, 20/12/2025, 55 | MOTIVO: Assento 55 inexistente

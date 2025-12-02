@@ -1,0 +1,4 @@
+
+	 RELATÓRIO DE ERROS 
+
+01/12/2025 | Linha L1 | Assento - | Motivo: Data já passou
