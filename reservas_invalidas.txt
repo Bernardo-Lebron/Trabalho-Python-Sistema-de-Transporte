@@ -1,4 +1,0 @@
-
-	 RESERVAS INVÁLIDAS 
-
-- | Linha: L3 | Horário: - | - | Assento: - | Motivo: Linha não encontrada
